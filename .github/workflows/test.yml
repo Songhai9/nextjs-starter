@@ -48,11 +48,15 @@ jobs:
               with:
                 token: ${{ secrets.CODECOV_TOKEN }}
 
-            - name: Run E2E tests
-              run: npm run test:e2e
-
             - name: Install Playwright Browsers
               run : npx playwright
+
+            - name: Run E2E tests
+              run: npm run test:e2e
+              env:
+                FLAGSMITH_KEY: ${{ secrets.FLAGSMITH_KEY }}
+
+            
 
             - uses: actions/upload-artifact@v3
               if: always()
