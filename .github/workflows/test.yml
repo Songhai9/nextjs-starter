@@ -61,9 +61,21 @@ jobs:
                 path: playwright-report/
             
             - name: Send Slack message on failure
-              id: slack
+              if: failure()
               uses: slackapi/slack-github-action@v1.24.0
               with:
-                payload-file-path: './.github/slack/test-failure-slack-payload.json'
+                payload-file-path: |
+                  {
+                    "blocks": [
+                      {
+                        "type": "section",
+                        "text": {
+                          "type": "mrkdwn",
+                          "text": "🛑 *<https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }}|${{ github.workflow }} workflow run>* failed."
+                        }
+                      }
+                    ]
+                  }
               env:
                 SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
